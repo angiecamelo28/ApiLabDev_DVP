@@ -1,0 +1,6 @@
+@ApiLabDev_DVP_HostAddress = http://localhost:5114
+
+GET {{ApiLabDev_DVP_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
