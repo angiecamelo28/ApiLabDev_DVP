@@ -18,7 +18,18 @@ public class ProductoController : ControllerBase
     [HttpGet("listar")]
     public async Task<IActionResult> ObtenerProductos()
     {
-        var productos = await _context.Productos.ToListAsync();
+        var productos = await _context.Productos
+            .Select(p => new
+            {
+                p.Id,
+                p.NombreProducto,
+                ImagenBase64 = p.ImagenProducto != null ? Convert.ToBase64String(p.ImagenProducto) : null,
+                p.PrecioUnitario,
+                p.Ext
+            })
+            .ToListAsync();
+
         return Ok(productos);
     }
+
 }

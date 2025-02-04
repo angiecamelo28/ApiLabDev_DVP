@@ -44,17 +44,37 @@ public class FacturaController : ControllerBase
     }
 
     [HttpPost("crear")]
-    public async Task<IActionResult> CrearFactura([FromBody] Factura factura)
+    public async Task<IActionResult> CrearFactura([FromBody] FacturaDTO facturaDto)
     {
-        if (factura == null || factura.Detalles == null || factura.Detalles.Count == 0)
+        if (facturaDto == null || facturaDto.Detalles == null || facturaDto.Detalles.Count == 0)
         {
             return BadRequest("La factura no contiene productos.");
         }
 
-        var nuevaFactura = await _facturaService.CrearFactura(factura);
+        var nuevaFactura = new Factura
+        {
+            FechaEmisionFactura = facturaDto.FechaEmisionFactura,
+            IdCliente = facturaDto.IdCliente,
+            NumeroFactura = facturaDto.NumeroFactura,
+            NumeroTotalArticulos = facturaDto.NumeroTotalArticulos,
+            SubTotalFacturas = facturaDto.SubTotalFacturas,
+            TotalImpuestos = facturaDto.TotalImpuestos,
+            TotalFactura = facturaDto.TotalFactura,
+            Detalles = facturaDto.Detalles.Select(d => new DetallesFactura
+            {
+                IdProducto = d.IdProducto,
+                CantidadDeProducto = d.CantidadDeProducto,
+                PrecioUnitarioProducto = d.PrecioUnitarioProducto,
+                SubtotalProducto = d.SubtotalProducto,
+                Notas = d.Notas
+            }).ToList()
+        };
 
-        return Ok(new { mensaje = "Factura creada exitosamente.", facturaId = nuevaFactura.Id });
+        var facturaCreada = await _facturaService.CrearFactura(nuevaFactura);
+
+        return Ok(new { mensaje = "Factura creada exitosamente.", facturaId = facturaCreada.Id });
     }
+
 
 
 }

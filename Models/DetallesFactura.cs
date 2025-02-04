@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class DetallesFactura
 {
@@ -8,11 +9,15 @@ public class DetallesFactura
 
     [ForeignKey("Factura")]
     public int IdFactura { get; set; }
-    public Factura Factura { get; set; }
+
+    [JsonIgnore]
+    public Factura? Factura { get; set; }
 
     [ForeignKey("Producto")]
     public int IdProducto { get; set; }
-    public Producto Producto { get; set; }
+
+    [JsonIgnore]
+    public Producto? Producto { get; set; }
 
     [Required]
     public int CantidadDeProducto { get; set; }
